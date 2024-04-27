@@ -25,7 +25,7 @@ def loopgeral():
     # lte Data de Abertura - Até
     # gte Data de Abertura - A partir de
     # formato 2023-06-01
-    for i in range(1, 2):
+    for i in range(1, 51):
         data = {
         "query": {
             "termo": [],
