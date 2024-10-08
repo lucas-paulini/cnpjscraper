@@ -25,11 +25,11 @@ def loopgeral():
     # lte Data de Abertura - Até
     # gte Data de Abertura - A partir de
     # formato 2023-06-01
-    for i in range(1, 51):
+    for i in range(1, 16):
         data = {
         "query": {
             "termo": [],
-            "atividade_principal": ["6911701"],
+            "atividade_principal": ["7500100"],
             "natureza_juridica": [],
             "uf": [],
             "municipio": [],
@@ -92,7 +92,8 @@ def loopgeral():
         
     # Inicia as listas vazias para receberem os dados
     lista_email = []
-    lista_tel = []
+    lista_tel1 = []
+    lista_tel2 = []
     lista_socio1 = []
     lista_socio2 = []
     lista_socio3 = []
@@ -123,21 +124,31 @@ def loopgeral():
             page_content = html.fromstring(response.content)
 
             # Usar os XPath para encontrar os elementos desejados
-            email = page_content.xpath('//*[@id="__nuxt"]/div/div[2]/section[1]/div/div/div[4]/div[1]/div[3]/div[2]/p[2]/a')
-            tel = page_content.xpath('//*[@id="__nuxt"]/div/div[2]/section[1]/div/div/div[4]/div[1]/div[3]/div[1]/p[2]/a')
-
+            email = page_content.xpath('//*[@id="__nuxt"]/div/section[4]/div[2]/div[1]/div/div[19]/p/a')
+            
             # Verificar se o elemento EMAIL foi encontrado
             if email:
                 # Acessar o texto do elemento e adicionar à lista de email
                 lista_email.append(email[0].text_content().lower())
             else:
                 lista_email.append('')
+            
+            tel1 = page_content.xpath('//*[@id="__nuxt"]/div/section[4]/div[2]/div[1]/div/div[20]/p[1]/a[1]')
+            tel2 = page_content.xpath('//*[@id="__nuxt"]/div/section[4]/div[2]/div[1]/div/div[20]/p[2]/a[1]')
+
+
             # Verificar se o elemento TEL foi encontrado
-            if tel:
+            if tel1:
                 # Acessar o texto do elemento e adicionar à lista de tel
-                lista_tel.append(tel[0].text_content())
+                lista_tel1.append(tel1[0].text_content())
             else:
-                lista_email.append('')
+                lista_tel1.append('')
+            if tel2:
+                # Acessar o texto do elemento e adicionar à lista de tel
+                lista_tel2.append(tel2[0].text_content())
+            else:
+                lista_tel2.append('')
+
             
             socio1 = page_content.xpath('//*[@id="__nuxt"]/div/div[2]/section[1]/div/div/div[4]/div[1]/div[4]/div/p[2]/b')
             socio2 = page_content.xpath('//*[@id="__nuxt"]/div/div[2]/section[1]/div/div/div[4]/div[1]/div[4]/div/p[3]/b')
@@ -169,8 +180,8 @@ def loopgeral():
                 lista_socio5.append(socio5[0].text_content())
             else:
                 lista_socio5.append('')
-
-            capital_social = page_content.xpath('//*[@id="__nuxt"]/div/div[2]/section[1]/div/div/div[4]/div[1]/div[1]/div[8]/p[2]')[0].text_content().replace('R$ ', '').replace('.', '').replace(',', '')
+                
+            capital_social = page_content.xpath('//*[@id="__nuxt"]/div/section[4]/div[2]/div[1]/div/div[10]/p')[0].text_content().replace('R$ ', '').replace('.', '').replace(',', '')
 
             if is_number(capital_social):
                 lista_capital_social.append(int(capital_social))
@@ -179,7 +190,8 @@ def loopgeral():
 
         else:
             lista_email.append('ERRO 404')
-            lista_tel.append('ERRO 404')
+            lista_tel1.append('ERRO 404')
+            lista_tel2.append('ERRO 404')
             socio1.append('ERRO 404')
             socio2.append('ERRO 404')
             socio3.append('ERRO 404')
@@ -192,8 +204,24 @@ def loopgeral():
 
     print('Dados adicionais extraídos com sucesso!')
 
+    # Após o scraping das informações adicionais e antes de criar o DataFrame:
+    max_length = max(len(lista_tel1), len(lista_tel2), len(lista_email), len(lista_socio1), len(lista_socio2), len(lista_socio3), len(lista_socio4), len(lista_socio5), len(lista_capital_social))
+
+    # Adiciona valores vazios para as listas que estão com tamanho menor
+    lista_tel1 += [''] * (max_length - len(lista_tel1))
+    lista_tel2 += [''] * (max_length - len(lista_tel2))
+    lista_email += [''] * (max_length - len(lista_email))
+    lista_socio1 += [''] * (max_length - len(lista_socio1))
+    lista_socio2 += [''] * (max_length - len(lista_socio2))
+    lista_socio3 += [''] * (max_length - len(lista_socio3))
+    lista_socio4 += [''] * (max_length - len(lista_socio4))
+    lista_socio5 += [''] * (max_length - len(lista_socio5))
+    lista_capital_social += [''] * (max_length - len(lista_capital_social))
+
+    # Agora você pode criar o DataFrame sem o erro
     df_dados_extraidos = pd.DataFrame({
-        'TELEFONE': lista_tel,
+        'TELEFONE1': lista_tel1,
+        'TELEFONE2': lista_tel2,
         'EMAIL': lista_email,
         'SÓCIO 1': lista_socio1,
         'SÓCIO 2': lista_socio2,

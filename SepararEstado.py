@@ -18,13 +18,13 @@ for arquivo in dados:
 dados_historicos.drop_duplicates('cnpj', keep='first', inplace=True)
 
 # Define o nome base do arquivo
-nome_arquivo = 'planilha-com-cnpj-advogados-unificado'
+nome_arquivo = 'planilha-com-cnpj-unificado-separado'
 
 # Obtém o caminho do diretório atual
 diretorio_atual = os.getcwd()
 
 # Nome da pasta onde deseja salvar o arquivo
-nome_pasta = 'planilhas_unificadas'
+nome_pasta = 'planilhas unificadas separadas'
 
 # Concatena o caminho do diretório atual com o nome da pasta
 caminho_pasta = os.path.join(diretorio_atual, nome_pasta)

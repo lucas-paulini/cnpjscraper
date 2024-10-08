@@ -14,7 +14,7 @@ for i in dados:
 dados_historicos.drop_duplicates('cnpj', keep='first', inplace=True)
 
 # Define o nome base do arquivo
-nome_arquivo = 'planilha-com-cnpj-advogados-unificado'
+nome_arquivo = 'planilha-com-cnpj-unificado'
 
 # Obtém o caminho do diretório atual
 diretorio_atual = os.getcwd()
