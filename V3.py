@@ -31,7 +31,7 @@ def loopgeral():
             "termo": [],
             "atividade_principal": ["7500100"],
             "natureza_juridica": [],
-            "uf": [],
+            "uf": ["RJ"],
             "municipio": [],
             "bairro": [],
             "situacao_cadastral": "ATIVA",
@@ -52,7 +52,7 @@ def loopgeral():
             "somente_mei": False,
             "excluir_mei": False,
             "com_email": True,
-            "incluir_atividade_secundaria": False,
+            "incluir_atividade_secundaria": True,
             "com_contato_telefonico": True,
             "somente_fixo": False,
             "somente_celular": False,
@@ -150,17 +150,24 @@ def loopgeral():
                 lista_tel2.append('')
 
             
-            socio1 = page_content.xpath('//*[@id="__nuxt"]/div/div[2]/section[1]/div/div/div[4]/div[1]/div[4]/div/p[2]/b')
-            socio2 = page_content.xpath('//*[@id="__nuxt"]/div/div[2]/section[1]/div/div/div[4]/div[1]/div[4]/div/p[3]/b')
-            socio3 = page_content.xpath('//*[@id="__nuxt"]/div/div[2]/section[1]/div/div/div[4]/div[1]/div[4]/div/p[4]/b')
-            socio4 = page_content.xpath('//*[@id="__nuxt"]/div/div[2]/section[1]/div/div/div[4]/div[1]/div[4]/div/p[5]/b')
-            socio5 = page_content.xpath('//*[@id="__nuxt"]/div/div[2]/section[1]/div/div/div[4]/div[1]/div[4]/div/p[6]/b')
+            socio1 = page_content.xpath('//*[@id="__nuxt"]/div/section[4]/div[2]/div[1]/div/div[24]/p[1]')
+            socio2 = page_content.xpath('//*[@id="__nuxt"]/div/section[4]/div[2]/div[1]/div/div[24]/p[2]')
+            socio3 = page_content.xpath('//*[@id="__nuxt"]/div/section[4]/div[2]/div[1]/div/div[24]/p[3]')
+            socio4 = page_content.xpath('//*[@id="__nuxt"]/div/section[4]/div[2]/div[1]/div/div[24]/p[4]')
+            socio5 = page_content.xpath('//*[@id="__nuxt"]/div/section[4]/div[2]/div[1]/div/div[24]/p[5]')
 
             if socio1:
+                # Se encontrar o sócio com o XPath genérico
                 lista_socio1.append(socio1[0].text_content())
             else:
-                lista_socio1.append('')
-
+                # Tentar o XPath específico se o genérico não funcionou
+                socio1_alt = page_content.xpath('//*[@id="__nuxt"]/div/section[4]/div[2]/div[1]/div/div[24]/p[1]')
+                
+                if socio1_alt:
+                    lista_socio1.append(socio1_alt[0].text_content())
+                else:
+                    lista_socio1.append('')
+                    
             if socio2:
                 lista_socio2.append(socio2[0].text_content())
             else:
@@ -192,11 +199,11 @@ def loopgeral():
             lista_email.append('ERRO 404')
             lista_tel1.append('ERRO 404')
             lista_tel2.append('ERRO 404')
-            socio1.append('ERRO 404')
-            socio2.append('ERRO 404')
-            socio3.append('ERRO 404')
-            socio4.append('ERRO 404')
-            socio5.append('ERRO 404')
+            lista_socio1.append('ERRO 404')
+            lista_socio2.append('ERRO 404')
+            lista_socio3.append('ERRO 404')
+            lista_socio4.append('ERRO 404')
+            lista_socio5.append('ERRO 404')
         
         print(f'- OK')
         #Espera 1 segundo antes de ir para a próxima iteração
@@ -239,7 +246,7 @@ def loopgeral():
 
 
     # Define o nome base do arquivo
-    nome_arquivo = 'planilha-com-cnpj-advogados'
+    nome_arquivo = 'planilha-com-cnpj'
 
     # Obtém o caminho do diretório atual
     diretorio_atual = os.getcwd()
@@ -255,7 +262,7 @@ def loopgeral():
         os.makedirs(caminho_pasta)
 
 
-    for i in range(500):
+    for i in range(5000):
         try:
             # Define o nome do arquivo com base no número de tentativas
             nome_arquivo_com_numero = nome_arquivo if i == 0 else f'{nome_arquivo}_{i}'
